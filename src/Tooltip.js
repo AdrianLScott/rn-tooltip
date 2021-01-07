@@ -42,7 +42,7 @@ type Props = {
   backgroundColor: string,
   highlightColor: string,
   toggleWrapperProps: {},
-  actionType: 'press' | 'longPress' | 'none',
+  actionType: 'press' | 'pointer-over' | 'longPress' | 'none',
 };
 
 class Tooltip extends React.Component<Props, State> {
@@ -79,6 +79,16 @@ class Tooltip extends React.Component<Props, State> {
       case 'press':
         return (
           <TouchableOpacity
+            onPress={this.toggleTooltip}
+            activeOpacity={1}
+            {...this.props.toggleWrapperProps}
+          >
+            {children}
+          </TouchableOpacity>
+        );
+      case 'pointer-over': {
+        return (
+          <TouchableOpacity
             onPressIn={this.toggleTooltip}
             onPressOut={this.toggleTooltip}
             activeOpacity={1}
@@ -86,7 +96,8 @@ class Tooltip extends React.Component<Props, State> {
           >
             {children}
           </TouchableOpacity>
-        );
+        )
+      }
       case 'longPress':
         return (
           <TouchableOpacity
@@ -266,7 +277,7 @@ Tooltip.propTypes = {
   overlayColor: PropTypes.string,
   backgroundColor: PropTypes.string,
   highlightColor: PropTypes.string,
-  actionType: PropTypes.oneOf(['press', 'longPress', 'none']),
+  actionType: PropTypes.oneOf(['press', 'pointer-over','longPress', 'none']),
 };
 
 Tooltip.defaultProps = {
