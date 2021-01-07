@@ -3,6 +3,7 @@ import { StyleProp, ViewStyle, TouchableOpacityProps } from 'react-native';
 
 type Props = {
   popover?: React.ReactElement<{}>;
+  vibrate?: boolean,
   withPointer?: boolean,
   height?: number | string,
   width?: number | string,

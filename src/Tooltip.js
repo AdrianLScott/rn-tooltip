@@ -7,6 +7,8 @@ import {
   View,
   ViewPropTypes as RNViewPropTypes,
   I18nManager,
+  Vibration,
+  PermissionsAndroid,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -26,6 +28,7 @@ type State = {
 
 type Props = {
   withPointer: boolean,
+  vibrate: boolean,
   popover: React.Element,
   height: number | string,
   width: number | string,
@@ -55,11 +58,16 @@ class Tooltip extends React.Component<Props, State> {
   timeout;
 
   toggleTooltip = () => {
+    console.log('executed')
     const { onClose } = this.props;
     this.getElementPosition();
     this.setState(prevState => {
       if (prevState.isVisible && !isIOS) {
         onClose && onClose();
+      }
+      else {
+        if(this.props.vibrate)
+          Vibration.vibrate(25);
       }
 
       return { isVisible: !prevState.isVisible };
@@ -71,7 +79,8 @@ class Tooltip extends React.Component<Props, State> {
       case 'press':
         return (
           <TouchableOpacity
-            onPress={this.toggleTooltip}
+            onPressIn={this.toggleTooltip}
+            onPressOut={this.toggleTooltip}
             activeOpacity={1}
             {...this.props.toggleWrapperProps}
           >
@@ -228,7 +237,8 @@ class Tooltip extends React.Component<Props, State> {
         >
           <TouchableOpacity
             style={styles.container(withOverlay, overlayColor)}
-            onPress={this.toggleTooltip}
+            onPressIn={this.toggleTooltip}
+            //onPressOut={()=>alert('snans')}
             activeOpacity={1}
           >
             {this.renderContent(true)}
@@ -242,6 +252,7 @@ class Tooltip extends React.Component<Props, State> {
 Tooltip.propTypes = {
   children: PropTypes.element,
   withPointer: PropTypes.bool,
+  vibrate: PropTypes.bool,
   popover: PropTypes.element,
   height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -260,6 +271,7 @@ Tooltip.propTypes = {
 
 Tooltip.defaultProps = {
   toggleWrapperProps: {},
+  vibrate: true,
   withOverlay: true,
   highlightColor: 'transparent',
   withPointer: true,
